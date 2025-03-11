@@ -1,0 +1,62 @@
+<div class="chat-bot-wrapper h-full px-1">
+    <div class="w-full flex flex-column h-full relative">
+        <div class="flex pl-2 pt-2">
+            <p-dropdown 
+                [options]="llmList" 
+                [(ngModel)]="selectedLlm" 
+                optionLabel="name"
+                placeholder="Select a LLM" />
+        </div>
+        <div class="chat-section flex-grow-1 px-1 pt-2" #chatboxDetails>
+            @for(item of items; track item;)
+            {
+                @if(item.role != 'user')
+                {
+                    <div class="system-chat flex mb-1">
+                     @if( $index == 0 || (items[$index - 1].role !== 'agent' && item.role == 'agent'))
+                     {
+                        <fa-icon [icon]="icon.faSystem" style="font-size: 20px;"></fa-icon>   
+                     }
+                     @else {
+                        <fa-icon [icon]="icon.faSystem" style="font-size: 20px; visibility: hidden;"></fa-icon>
+                     }
+                        <div class="system-chat-data ml-2 p-2">
+                            @if(item.type =='text')
+                            {
+                                {{item.message}}
+                            }@else {
+                                <!-- <div class="chat-message bot">
+                                    <div class="dot-loader">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                </div>
+                                </div> -->
+                                <div class="loader-container">
+                                    <div class="loader"></div>
+                                    <div class="loader mt-1"></div>
+                                    <div class="loader mt-1"></div>
+                                 </div>
+                            }
+                        </div> 
+                    </div>
+                }
+                @else {
+                    <div class="flex justify-content-end">
+                        <div class="user-chat-data py-2 px-3 mb-1">
+                            {{item.message}}
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="input-section flex align-items-center" style="z-index: 1000;background: var(--bluegray-800);
+                 color: white;">
+            <textarea pInputTextarea #txtInput [rows]="1" (input)="autoGrowTextarea()"
+                class="p-inputtext p-inputtext-sm custom-input" placeholder="Ask Me Anything"
+                [(ngModel)]="chatItem.message" (keyup.enter)="onUserAction()">
+                </textarea>
+            <fa-icon [icon]="icon.faSend" class="pointer chat-enter-icon text-center" (click)="onUserAction()"></fa-icon>
+        </div>
+    </div>
+</div>

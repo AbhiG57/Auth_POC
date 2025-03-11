@@ -1,0 +1,8 @@
+<div class="grid mx-1 dashboard-wrapper">
+    <div class="sm:col-2 h-full px-0 pb-0">
+        <app-side-chat-section (selectedChatId)="selectedChatIdEvent($event)" (newChatCreatedEvent)="newChatCreated($event)"></app-side-chat-section>
+    </div>
+    <div class="sm:col-10 h-full">
+        <app-chat-bot [selectedChatIdFromHistory]="selectedChatId" [newChatCreationFlag]="newChatCreationFlag"></app-chat-bot>
+    </div>
+</div>

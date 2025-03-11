@@ -1,0 +1,18 @@
+.side-section-wrapper
+{
+    background-color: var(--p-surface-950);
+}
+
+.list-item:hover
+{
+    background: var(--p-surface-900);
+    border: 1px solid var(--p-surface-900);
+    border-radius: 11px;
+}
+
+.selected
+{
+    background: var(--p-surface-900);
+    border: 1px solid var(--p-surface-900);
+    border-radius: 11px;
+}

@@ -1,0 +1,19 @@
+$primary-color: #0C0032;
+
+@mixin p-button {
+    color: white;
+    background: var(--blue-900) !important;
+    padding: 0.3rem 0.7rem !important;
+    border-color: var(--blue-900) !important;
+    border-radius: 0.2rem !important;
+  }
+@mixin p-button-secondary
+{
+    background: var(--gray-800) !important;
+    border-color: var(--gray-800) !important;
+}
+@mixin p-button-outlined {
+  color: var(--blue-900) !important;
+  border-color: var(--blue-900) !important;
+  background: transparent !important;
+}

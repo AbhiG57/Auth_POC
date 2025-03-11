@@ -1,0 +1,28 @@
+<div class="grid resturant-dashboard-wrapper">
+    <div class="sm:col-12 mx-2 p-2">
+        <h3>List of Restaurants</h3>
+        <div class="pt-2 px-2">
+            <p-table [value]="items" [tableStyle]="{ 'min-width': '50rem' }">
+                <ng-template #header>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-product>
+                    <tr>
+                        <td>{{ product.code }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category }}</td>
+                        <td>{{ product.location }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <div>
+                Message From API : {{responseMessage}}
+            </div>
+        </div>
+    </div>
+</div>

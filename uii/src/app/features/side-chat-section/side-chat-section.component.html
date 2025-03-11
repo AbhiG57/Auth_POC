@@ -1,0 +1,22 @@
+<div class="grid h-full side-section-wrapper">
+    <div class="sm:col-12 h-full p-3">
+     <div class="top-section flex justify-content-between" style="font-size: 16px;">
+        New Chat 
+        <fa-icon [icon]="icons.faEdit" class="new-chat-icon" (click)="newChatCreated()"></fa-icon>
+     </div>
+     <div class="chat-history-title pt-3">Chat History</div>
+     <div class="chat-history-section pt-2">
+        @if(chatHistoryTitles && chatHistoryTitles.length>0)
+        {    
+            @for(item of chatHistoryTitles; track item)
+            {
+                <div class="list-item py-1 px-3 mb-1" (click)="chatTitleSelected(item)" [ngClass] = "{'selected': selectedChatIdValue == item.session_id}">
+                    {{item.title}}
+                </div>
+            }   
+        } @else {
+            <div>No Records Yet</div>
+        }
+     </div>
+    </div>
+</div>
