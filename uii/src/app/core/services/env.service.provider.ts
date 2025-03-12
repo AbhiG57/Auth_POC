@@ -14,7 +14,7 @@ export const EnvServiceFactory = () => {
   // If needed, a deep merge can be performed here to merge properties instead of overwriting them.
   for (const key in browserWindowEnv) {
     if (browserWindowEnv.hasOwnProperty(key)) {
-      env[key] = <any>window['__env'][key];
+      env[key] =browserWindowEnv[key];
     }
   }
   return env;

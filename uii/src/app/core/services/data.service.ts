@@ -96,6 +96,6 @@ export class DataService {
    }
    getDummyData():Observable<any>
   {
-    return this.apiService.get('http://localhost:3000/api/backend/data');
+    return this.apiService.get(`${this.env.apiUrl}api/backend/data`);
   }
  }

@@ -6,6 +6,7 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { provideHttpClient } from '@angular/common/http';
 import {AuthConfig, OAuthService, provideOAuthClient} from 'angular-oauth2-oidc'
+import { EnvServiceProvider } from './core/services/env.service.provider';
 
 
 export const authcodeFlowConfig : AuthConfig ={
@@ -41,6 +42,7 @@ export const appConfig: ApplicationConfig = {
 ),
   provideHttpClient(),
   provideOAuthClient(),
+  EnvServiceProvider
   /* {
     provide:APP_INITIALIZER,
     useFactory:(OAuthService: OAuthService)=>{
