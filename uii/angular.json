@@ -38,7 +38,8 @@
               "node_modules/primeflex/primeflex.scss",
               "node_modules/primeflex/primeflex.min.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "baseHref": "/ui/"
           },
           "configurations": {
             "production": {
