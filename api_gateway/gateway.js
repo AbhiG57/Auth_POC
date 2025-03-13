@@ -60,14 +60,13 @@ const response = await axios.post(`${process.env.KEYCLOAK_SERVICE_URL}/realms/${
  
 // Middleware: Redirect UI requests but NOT API requests
 app.use((req, res, next) => {
-    if (req.path.startsWith('/api/backend')) {
-        // Allow API requests, but check token validity
+    /* if (req.path.startsWith('/api/backend')) {
         if (!isTokenValid(req)) {
             console.log("API request but token invalid, returning 401");
             return res.status(401).json({ error: 'Unauthorized' });
         }
         return next();
-    }
+    }*/
  
     if (req.path === '/callback') {
         return next();
@@ -81,6 +80,7 @@ app.use((req, res, next) => {
             .then((refreshed) => {
                 if (!refreshed) {
                     console.log("Redirecting to Keycloak for authentication...");
+                    req.session.redirectAfterLogin = req.originalUrl;
                     return res.redirect(`${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.REALM}/protocol/openid-connect/auth?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${process.env.CALLBACK_URL}`);
                 }
                 next(); // Continue after successful refresh
@@ -122,7 +122,10 @@ app.get('/callback', async (req, res) => {
         req.session.expiry = Date.now() + tokenResponse.data.expires_in * 1000;
  
         console.log('User authenticated successfully. Redirecting to UI.');
-        return res.redirect('/');
+        const redirectUrl = req.session.redirectAfterLogin;
+        delete req.session.redirectAfterLogin;
+        console.log("redirect URl",redirectUrl);
+        return res.redirect(redirectUrl);
     } catch (error) {
         console.error('Token exchange failed:', error.response?.data || error.message);
         return res.status(500).send('Authentication failed');
@@ -148,7 +151,7 @@ app.use('/api/backend', createProxyMiddleware({
 app.use('/', createProxyMiddleware({
     target: UI_URL, // http://abc.com/ui
     changeOrigin: true,
-    pathRewrite: { '^/$': '/' } // Ensures / points to UI root
+    pathRewrite: (path, req) => path.replace(/^\/?/, '/')
 }));
  
 // Start the API Gateway
