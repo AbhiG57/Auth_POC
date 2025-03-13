@@ -71,10 +71,10 @@ app.use((req, res, next) => {
     if (req.path === '/callback') {
         return next();
     }
-    /* if(req.path == '/')
+    if(req.path == '/')
     {
         return res.redirect('/ui');
-    } */
+    }
  
     // Check if token is expired
     if (!isTokenValid(req)) {
@@ -152,7 +152,7 @@ app.use('/api/backend', createProxyMiddleware({
 
 
 // Proxy requests to UI (Angular app)
-app.use('/', createProxyMiddleware({
+app.use('/ui', createProxyMiddleware({
     target: UI_URL,
     changeOrigin: true
 }));

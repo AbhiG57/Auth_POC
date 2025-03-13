@@ -1,0 +1,43 @@
+---------------------
+Scenario 1
+Angular is hosted on / 
+    nginx 
+    location / {
+	   root C:/Users/Administrator/Downloads/nginx-1.27.4/nginx-1.27.4/html;
+           try_files $uri $uri/ /index.html;
+        }
+    
+    api gateway
+    app.use('/', createProxyMiddleware({
+    target: 'http://localhost:80'
+    changeOrigin: true 
+    }));
+
+    dist content should be in /html
+works well takes angular routes correctly
+--------------------------------------------------
+
+
+Scenario 2
+Angular is Hosted on /ui basically via baseherf from angular.json
+    nginx
+    location /ui/ {
+	   root C:/Users/Administrator/Downloads/nginx-1.27.4/nginx-1.27.4/html;
+           try_files $uri $uri/ /ui/index.html;
+	}
+
+    api gateway
+     if(req.path == '/')
+    {
+        return res.redirect('/ui');
+    } // basically redirecting to /ui as a workaround currently
+
+    app.use('/ui', createProxyMiddleware({
+    target: 'http:localhost:80/ui',
+    changeOrigin: true
+    }));
+
+    dist content to be stored by creating one folder inside html folder named as your base herf
+    something like nginx/html/ui/
+
+works well takes angular routes correctly
