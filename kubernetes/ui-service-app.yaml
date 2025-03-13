@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-service-app
+  labels:
+    app: ui-service-app # Changed to 'app' to match service selector
+spec:
+  selector:
+    matchLabels:
+      app: ui-service-app # Added matchLabels
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ui-service-app
+        app_type: frontend
+    spec:
+      containers:
+        - image: api-gateway:1.0
+          name: ui-service-app
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "550M"
+            limits: # Added limits
+              cpu: "400m"
+              memory: "750M"
+          ports:
+            - containerPort: 80
+              name: ui-service-app
+          imagePullPolicy: Never # Moved to container level
+          envFrom:
+            - configMapRef:
+                name: my-env-config
+      restartPolicy: Always
+# ---
+# apiVersion: v1 # Added apiVersion for Service
+# kind: Service
+# metadata:
+#   name: ui-service-app
+# spec:
+#   selector:
+#     app: ui-service-app
+#   type: NodePort
+#   ports:
+#     - port: 80
+#       targetPort: 80
+#       nodePort: 31686
+#       protocol: TCP
+---
+apiVersion: v1 # Added apiVersion for Service
+kind: Service
+metadata:
+  name: ui-service-app
+spec:
+  selector:
+    app: ui-service-app
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-env-config
+data:
+  PORT: "80" 
+  KEYCLOAK_BASE_URL: "http://localhost:30001"
+  REALM: "myrealm"
+  CLIENT_ID: "api-gateway"
+  CLIENT_SECRET: "tuReFpw45v0srXlcc4DKIspNS9px4C81"
+  CALLBACK_URL: "http://localhost:31053/callback"
+  UI_URL: "http://restaurant-service:8000"
+  BACKEND_URL: "http://fastapi-service:8001"
+  KEYCLOAK_SERVICE_URL: "http://keycloak:8080"

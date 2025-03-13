@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 })
 export class EnvService {
 
-  public apiUrl = 'http://localhost:3000/';
+  public apiUrl = '/api/backend/';
     public production= false;
     public backendUrl='';
     public wfServiceUrl = '';

@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
  
 // Keycloak Config
 const KEYCLOAK_BASE_URL = process.env.KEYCLOAK_BASE_URL;
+const KEYCLOAK_SERVICE_URL = process.env.KEYCLOAK_SERVICE_URL;
 const REALM = process.env.REALM;
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -37,7 +38,7 @@ async function refreshToken(req) {
         return false;
     }
     try {
-const response = await axios.post(`${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.REALM}/protocol/openid-connect/token`,
+const response = await axios.post(`${process.env.KEYCLOAK_SERVICE_URL}/realms/${process.env.REALM}/protocol/openid-connect/token`,
         new URLSearchParams({
             grant_type: 'refresh_token',
             client_id: process.env.CLIENT_ID,
@@ -105,7 +106,7 @@ app.get('/callback', async (req, res) => {
     try {
         // Exchange authorization code for tokens
         const tokenResponse = await axios.post(
-            `${KEYCLOAK_BASE_URL}/realms/${REALM}/protocol/openid-connect/token`,
+            `${KEYCLOAK_SERVICE_URL}/realms/${REALM}/protocol/openid-connect/token`,
             new URLSearchParams({
                 client_id: CLIENT_ID,
                 client_secret: CLIENT_SECRET,

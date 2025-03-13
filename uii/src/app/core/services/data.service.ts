@@ -96,6 +96,6 @@ export class DataService {
    }
    getDummyData():Observable<any>
   {
-    return this.apiService.get(`${this.env.apiUrl}api/backend/data`);
+    return this.apiService.get(`${this.env.apiUrl}data`);
   }
  }
