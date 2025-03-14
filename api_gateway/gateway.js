@@ -3,6 +3,12 @@ const express = require('express');
 const session = require('express-session');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const axios = require('axios');
+
+const IORedis = require('ioredis');
+const { RedisStore } = require('connect-redis');
+
+const redisClient = new IORedis(process.env.REDIS_URL || "redis://127.0.0.1:6379");
+
  
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,10 +23,13 @@ let CLIENT_SECRET = "";
 let CALLBACK_URL = "";
 let UI_URL = "http://localhost:3000";
 let BACKEND_URL = "http://localhost:3000";
+
+
  
 // Session Setup
 app.use(session({
     secret: 'your-secret-key',
+    store: new RedisStore({ client: redisClient }),
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false } // Set to true if using HTTPS
@@ -158,6 +167,27 @@ app.get('/callback', async (req, res) => {
         return res.status(500).send('Authentication failed');
     }
 });
+
+app.get('/user-info', (req, res) => {
+    if (!req.session || !req.session.token) {
+        return res.status(401).json({ error: 'Unauthorized: No token found' });
+    }
+    try {
+        // Decode the JWT token
+        const tokenParts = req.session.token.split('.');
+        if (tokenParts.length !== 3) {
+            return res.status(400).json({ error: 'Invalid token format' });
+        }
+ 
+        const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+ 
+        // Send user information
+        return res.json({ user: payload });
+    } catch (error) {
+        console.error('Error decoding token:', error);
+        return res.status(500).json({ error: 'Failed to decode token' });
+    }
+});
  
 // Proxy API requests to backend
 app.use('/api/backend', createProxyMiddleware({
@@ -173,6 +203,8 @@ app.use('/api/backend', createProxyMiddleware({
         res.status(500).json({ error: 'Proxy Error', details: err.message });
     }
 }));
+
+app.get('/userdata')
 
 
 // Proxy requests to UI (Angular app)

@@ -23,5 +23,9 @@ export const routes: Routes = [
         path:'restaurants',
         component:ResturantDashboardComponent,
         canActivate:[authGuard]
+    },
+    {
+        path:"**",
+        component:PageNotFoundComponent
     }
 ];

@@ -7,6 +7,7 @@ import Aura from '@primeng/themes/aura';
 import { provideHttpClient } from '@angular/common/http';
 import {AuthConfig, OAuthService, provideOAuthClient} from 'angular-oauth2-oidc'
 import { EnvServiceProvider } from './core/services/env.service.provider';
+import { AccessService } from './core/services/access.service';
 
 
 export const authcodeFlowConfig : AuthConfig ={
@@ -27,7 +28,6 @@ return new Promise((resolve)=>{
 })
 }
 
-
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
     provideAnimationsAsync(),
@@ -42,18 +42,18 @@ export const appConfig: ApplicationConfig = {
 ),
   provideHttpClient(),
   provideOAuthClient(),
-  EnvServiceProvider
-  /* {
+  EnvServiceProvider,
+  {
     provide:APP_INITIALIZER,
-    useFactory:(OAuthService: OAuthService)=>{
+    useFactory:(accessService: AccessService)=>{
       return () =>{
-        initializeOAuth(OAuthService);
+        accessService.load().toPromise();
       }
     },
     multi:true,
     deps:[
-      OAuthService
+    AccessService
     ]
-  } */
+  }
   ]
 };
