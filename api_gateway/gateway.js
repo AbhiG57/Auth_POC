@@ -8,16 +8,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
  
 // Keycloak Config
-const KEYCLOAK_BASE_URL = process.env.KEYCLOAK_BASE_URL;
-const KEYCLOAK_SERVICE_URL = process.env.KEYCLOAK_SERVICE_URL;
-const REALM = process.env.REALM;
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const CALLBACK_URL = process.env.CALLBACK_URL;
- 
-// Frontend & Backend
-const UI_URL = process.env.UI_URL;
-const BACKEND_URL = process.env.BACKEND_URL;
+let TENANT_CONFIG = JSON.parse(process.env.TENANT_CONFIG);
+let KEYCLOAK_BASE_URL = "";
+let KEYCLOAK_SERVICE_URL = "";
+let REALM = "";
+let CLIENT_ID = "";
+let CLIENT_SECRET = "";
+let CALLBACK_URL = "";
+let UI_URL = "http://localhost:3000";
+let BACKEND_URL = "http://localhost:3000";
  
 // Session Setup
 app.use(session({
@@ -26,7 +25,30 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false } // Set to true if using HTTPS
 }));
- 
+
+// function to set tenant configs
+function setConfigForTenant(req)
+{
+    console.log("hostname",req.hostname);
+    let configs = TENANT_CONFIG[req.hostname];
+    console.log(configs);
+    KEYCLOAK_BASE_URL =configs.keycloak_base_url;
+    KEYCLOAK_SERVICE_URL = configs.keycloak_service_url;
+    REALM = configs.realm;
+    CLIENT_ID =configs.client_id;
+    CLIENT_SECRET = configs.client_secret;
+    CALLBACK_URL = configs.callback_url;
+    UI_URL = configs.ui_url;
+    BACKEND_URL = configs.backend_url;
+}
+
+const customRouterUI =function(req){
+    return UI_URL;
+}
+
+const customRouteBackend =function(req){
+    return BACKEND_URL;
+}
 // Function to check if token is valid
 function isTokenValid(req) {
     return req.session.token && req.session.expiry && Date.now() < req.session.expiry;
@@ -38,11 +60,11 @@ async function refreshToken(req) {
         return false;
     }
     try {
-const response = await axios.post(`${process.env.KEYCLOAK_SERVICE_URL}/realms/${process.env.REALM}/protocol/openid-connect/token`,
+const response = await axios.post(`${KEYCLOAK_SERVICE_URL}/realms/${REALM}/protocol/openid-connect/token`,
         new URLSearchParams({
             grant_type: 'refresh_token',
-            client_id: process.env.CLIENT_ID,
-            client_secret: process.env.CLIENT_SECRET,
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
             refresh_token: req.session.refresh_token
         }),
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
@@ -85,13 +107,14 @@ app.use((req, res, next) => {
                 if (!refreshed) {
                     console.log("Redirecting to Keycloak for authentication...");
                     req.session.redirectAfterLogin = req.originalUrl;
-                    return res.redirect(`${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.REALM}/protocol/openid-connect/auth?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${process.env.CALLBACK_URL}`);
+                    setConfigForTenant(req);
+                    return res.redirect(`${KEYCLOAK_BASE_URL}/realms/${REALM}/protocol/openid-connect/auth?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${CALLBACK_URL}`);
                 }
                 next(); // Continue after successful refresh
             })
             .catch((err) => {
                 console.error("Error refreshing token:", err);
-                return res.redirect(`${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.REALM}/protocol/openid-connect/auth?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${process.env.CALLBACK_URL}`);
+                return res.redirect(`${KEYCLOAK_BASE_URL}/realms/${REALM}/protocol/openid-connect/auth?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${CALLBACK_URL}`);
             });
     } else {
         next(); // Continue if token is valid
@@ -138,11 +161,12 @@ app.get('/callback', async (req, res) => {
  
 // Proxy API requests to backend
 app.use('/api/backend', createProxyMiddleware({
-    target: process.env.BACKEND_URL, // Ensure this is set correctly
+    target: BACKEND_URL, // Ensure this is set correctly
     changeOrigin: true,
+    router:customRouteBackend,
     pathRewrite: { '^/api/backend': '' }, // Remove prefix if needed
     onProxyReq: (proxyReq, req, res) => {
-        console.log(`Proxying request: ${req.method} ${req.originalUrl} -> ${process.env.BACKEND_URL}`);
+        console.log(`Proxying request: ${req.method} ${req.originalUrl} -> ${BACKEND_URL}`);
     },
     onError: (err, req, res) => {
         console.error('Proxy Error:', err);
@@ -154,6 +178,7 @@ app.use('/api/backend', createProxyMiddleware({
 // Proxy requests to UI (Angular app)
 app.use('/ui', createProxyMiddleware({
     target: UI_URL,
+    router:customRouterUI,
     changeOrigin: true
 }));
  

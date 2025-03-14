@@ -41,3 +41,18 @@ Angular is Hosted on /ui basically via baseherf from angular.json
     something like nginx/html/ui/
 
 works well takes angular routes correctly
+
+
+--------------------------
+PORT=80
+# Keycloak Config
+KEYCLOAK_BASE_URL=http://localhost:8080
+KEYCLOAK_SERVICE_URL=http://localhost:8080
+REALM=myrealm
+CLIENT_ID=api-gateway
+CLIENT_SECRET=hdQvt4yxQ0yEGRN2rLOynjAgOjBdHQh9
+CALLBACK_URL=http://localhost:3000/callback
+ 
+# Frontend & Backend
+UI_URL=http://localhost:4200/ui
+BACKEND_URL=http://localhost:8000
