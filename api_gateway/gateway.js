@@ -108,6 +108,7 @@ app.use((req, res, next) => {
     }
  
     // Check if token is expired
+    console.log("inside 1st block",req.session);
     if (!isTokenValid(req)) {
         console.log("Token expired, attempting refresh...");
  
@@ -188,6 +189,7 @@ app.get('/user-info', (req, res) => {
         return res.status(500).json({ error: 'Failed to decode token' });
     }
 });
+
  
 // Proxy API requests to backend
 app.use('/api/backend', createProxyMiddleware({
@@ -203,8 +205,6 @@ app.use('/api/backend', createProxyMiddleware({
         res.status(500).json({ error: 'Proxy Error', details: err.message });
     }
 }));
-
-app.get('/userdata')
 
 
 // Proxy requests to UI (Angular app)

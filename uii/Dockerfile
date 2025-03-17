@@ -9,5 +9,6 @@ RUN npm run build
 FROM nginx:alpine
 
 EXPOSE 8000
-COPY --from=node /app/dist/slm-poc-ui/browser/* /usr/share/nginx/html/
+RUN mkdir /usr/share/nginx/html/ui
+COPY --from=node /app/dist/slm-poc-ui/browser/* /usr/share/nginx/html/ui
 COPY --from=node /app/nginx.conf /etc/nginx/nginx.conf

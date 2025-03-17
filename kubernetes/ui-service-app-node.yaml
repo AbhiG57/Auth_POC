@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ui-service-app
+  name: ui-service-app1
   labels:
-    app: ui-service-app # Changed to 'app' to match service selector
+    app: ui-service-app1 # Changed to 'app' to match service selector
 spec:
   selector:
     matchLabels:
-      app: ui-service-app # Added matchLabels
+      app: ui-service-app1 # Added matchLabels
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -16,12 +16,12 @@ spec:
   template:
     metadata:
       labels:
-        app: ui-service-app
+        app: ui-service-app1
         app_type: frontend
     spec:
       containers:
         - image: api-gateway:3.0
-          name: ui-service-app
+          name: ui-service-app1
           resources:
             requests:
               cpu: "200m"
@@ -31,20 +31,20 @@ spec:
               memory: "750M"
           ports:
             - containerPort: 80
-              name: ui-service-app
+              name: ui-service-app1
           imagePullPolicy: Never # Moved to container level
           envFrom:
             - configMapRef:
                 name: my-env-config
-      restartPolicy: Never
+      restartPolicy: Always
 # ---
 # apiVersion: v1 # Added apiVersion for Service
 # kind: Service
 # metadata:
-#   name: ui-service-app
+#   name: ui-service-app1
 # spec:
 #   selector:
-#     app: ui-service-app
+#     app: ui-service-app1
 #   type: NodePort
 #   ports:
 #     - port: 80
@@ -55,14 +55,15 @@ spec:
 apiVersion: v1 # Added apiVersion for Service
 kind: Service
 metadata:
-  name: ui-service-app
+  name: ui-service-app1
 spec:
   selector:
-    app: ui-service-app
-  type: ClusterIP
+    app: ui-service-app1
+  type: NodePort
   ports:
     - port: 80
       targetPort: 80
+      nodePort: 30002
       protocol: TCP
 ---
 apiVersion: v1
@@ -80,7 +81,7 @@ data:
         "realm": "tenant1",
         "client_id": "api-gateway",
         "client_secret": "JGenifJZhEW0etODVAwhzKw81Z5D7YEG",
-        "callback_url": "http://tenant1.abc.com/callback",
+        "callback_url": "http://tenant1.abc.com:30002/callback",
         "ui_url": "http://restaurant-service:8000/ui",
         "backend_url": "http://fastapi-service:8001"
       },
@@ -90,7 +91,7 @@ data:
         "realm": "tenant2",
         "client_id": "api-gateway-tenant-2",
         "client_secret": "kQZAOkIoPDUVZlHyU1LDwNIjGDQKEi0A",
-        "callback_url": "http://tenant2.abc.com/callback",
+        "callback_url": "http://tenant2.abc.com:30002/callback",
          "ui_url": "http://restaurant-service:8000/ui",
         "backend_url": "http://fastapi-service:8001"
       }
