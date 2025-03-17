@@ -7,7 +7,7 @@ const axios = require('axios');
 const IORedis = require('ioredis');
 const { RedisStore } = require('connect-redis');
 
-const redisClient = new IORedis(process.env.REDIS_URL || "redis://127.0.0.1:6379");
+// const redisClient = new IORedis(process.env.REDIS_URL || "redis://127.0.0.1:6379");
 
  
 const app = express();
@@ -29,7 +29,6 @@ let BACKEND_URL = "http://localhost:3000";
 // Session Setup
 app.use(session({
     secret: 'your-secret-key',
-    store: new RedisStore({ client: redisClient }),
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false } // Set to true if using HTTPS
@@ -187,6 +186,28 @@ app.get('/user-info', (req, res) => {
     } catch (error) {
         console.error('Error decoding token:', error);
         return res.status(500).json({ error: 'Failed to decode token' });
+    }
+});
+
+app.get('/logout', (req, res) => {
+    if (req.session) {
+        // Destroy session
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Error destroying session:", err);
+                return res.status(500).json({ error: 'Failed to logout' });
+            }
+ 
+            // Clear session cookie
+            res.clearCookie('connect.sid'); // Ensure this matches your session cookie name
+            console.log("cookiee cleared");
+            // Redirect to Keycloak logout
+            const keycloakLogoutURL = `${KEYCLOAK_BASE_URL}/realms/${REALM}/protocol/openid-connect/logout?client_id=${CLIENT_ID}&post_logout_redirect_uri=http://${req.hostname}`;
+            return res.redirect(keycloakLogoutURL);
+        });
+    } else {
+        // If no session, redirect to login
+        return res.redirect(`${KEYCLOAK_BASE_URL}/realms/${REALM}/protocol/openid-connect/auth?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${CALLBACK_URL}`);
     }
 });
 

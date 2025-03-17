@@ -29,6 +29,11 @@ export class MockDataService {
     return this.apiService.get('');
   }
   
+  logoutUser():Observable<any>
+  {
+      return this.apiService.get(`/logout`);
+  }
+  
 } 
 
 

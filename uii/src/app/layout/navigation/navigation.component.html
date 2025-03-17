@@ -1,1 +1,35 @@
-<p-menubar [model]="items" />
+<p-menu #submenu [model]="subItems"  [popup]="true">
+    <ng-template #submenuheader let-item>
+        <span class="text-primary font-bold">{{ item.label }}</span>
+    </ng-template>
+    <ng-template #item1 let-item1>
+        <a pRipple class="flex items-center p-menu-item-link">
+            <span [class]="item1.icon"></span>
+            <span class="ml-2">{{ item1.label }}</span>
+            <span *ngIf="item1.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item1.shortcut }}</span>
+        </a>
+    </ng-template>
+    <ng-template #end>
+        <button pRipple class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200">
+            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mr-2" shape="circle" />
+            <span class="inline-flex flex-col">
+                <span class="font-bold">Amy Elsner</span>
+            </span>
+        </button>
+    </ng-template>
+</p-menu>
+
+
+<p-menubar [model]="items">
+    <ng-template #item let-item let-root="root">
+        <a class="flex items-center p-menubar-item-link">
+            <span>{{ item.label }}</span>
+        </a>
+    </ng-template>
+    <ng-template #end>
+        <div class="flex items-center gap-2" (click)="submenu.toggle($event)">
+            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
+        </div>
+    </ng-template>
+</p-menubar>
+

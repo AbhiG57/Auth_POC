@@ -98,4 +98,9 @@ export class DataService {
   {
     return this.apiService.get(`${this.env.apiUrl}data`);
   }
+
+  logoutUser():Observable<any>
+  {
+    return this.apiService.get(`/logout`);
+  }
  }
