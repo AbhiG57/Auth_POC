@@ -28,7 +28,7 @@ let BACKEND_URL = "http://localhost:3000";
  
 // Session Setup
 app.use(session({
-    secret: 'your-secret-key',
+    secret: 'your-secret-key', //new RedisStore({ client: redisClient }),
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false } // Set to true if using HTTPS

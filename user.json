@@ -1,0 +1,43 @@
+{
+    "user": {
+        "exp": 1742279734,
+        "iat": 1742279434,
+        "auth_time": 1742279433,
+        "jti": "9ad95991-cc6d-4422-9660-cf533af94958",
+        "iss": "http://tenant1.abc.com:8080/realms/tenant1",
+        "aud": "account",
+        "sub": "7cc7bd70-1731-4db6-97d3-d84e2a613daf",
+        "typ": "Bearer",
+        "azp": "api-gateway",
+        "sid": "4225d380-59ce-460d-8d0e-e21bf49fb310",
+        "acr": "1",
+        "allowed-origins": [
+            "http://tenant1.abc.com",
+            "http://tenant1.abc.com/*",
+            "http://tenant1.abc.com/logout"
+        ],
+        "realm_access": {
+            "roles": [
+                "default-roles-myrealm",
+                "offline_access",
+                "uma_authorization"
+            ]
+        },
+        "resource_access": {
+            "account": {
+                "roles": [
+                    "manage-account",
+                    "manage-account-links",
+                    "view-profile"
+                ]
+            }
+        },
+        "scope": "profile email",
+        "email_verified": true,
+        "name": "Abhishek G",
+        "preferred_username": "abhishek",
+        "given_name": "Abhishek",
+        "family_name": "G",
+        "email": "abhyagawade@gmail.com"
+    }
+}

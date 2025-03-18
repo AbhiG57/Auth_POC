@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -8,7 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 import {AuthConfig, OAuthService, provideOAuthClient} from 'angular-oauth2-oidc'
 import { EnvServiceProvider } from './core/services/env.service.provider';
 import { AccessService } from './core/services/access.service';
-
+import { lastValueFrom } from 'rxjs';
 
 export const authcodeFlowConfig : AuthConfig ={
   issuer:'https://ec2-3-109-213-28.ap-south-1.compute.amazonaws.com:8443/realms/restaurants-tenant1',
@@ -28,6 +28,16 @@ return new Promise((resolve)=>{
 })
 }
 
+function initializeApp(accessService:AccessService):Promise<void>{
+  return new Promise((resolve)=>{
+     accessService.load()
+    .subscribe(()=>resolve());
+  })
+  }
+
+
+
+
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
     provideAnimationsAsync(),
@@ -43,17 +53,6 @@ export const appConfig: ApplicationConfig = {
   provideHttpClient(),
   provideOAuthClient(),
   EnvServiceProvider,
-  {
-    provide:APP_INITIALIZER,
-    useFactory:(accessService: AccessService)=>{
-      return () =>{
-        accessService.load().toPromise();
-      }
-    },
-    multi:true,
-    deps:[
-    AccessService
-    ]
-  }
+  provideAppInitializer(()=>initializeApp(inject(AccessService)))
   ]
 };

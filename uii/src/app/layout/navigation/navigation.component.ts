@@ -8,6 +8,7 @@ import { RippleModule } from 'primeng/ripple';
 import { IDynSrevice, isMockSharedService } from '../../core/config';
 import { CommunicationService } from '../../core/services';
 import { SocketService } from '../../core/services/socket.service';
+import { AccessService } from '../../core/services/access.service';
 
 
 @Component({
@@ -20,11 +21,15 @@ export class NavigationComponent {
   items: MenuItem[] | undefined;
   subItems: MenuItem[] | undefined;
   service: IDynSrevice['service'];
-  constructor(private communicationService:CommunicationService, private socketService:SocketService,private injector: Injector){
+  user:any;
+  constructor(private accessService:AccessService, private injector: Injector){
         this.service = this.injector.get<IDynSrevice['service']>(isMockSharedService)
     }
 
   ngOnInit() {
+      console.log("Navigation component");
+      
+      this.user = this.accessService.getUserInfo();
       this.items = [
           {
               label: 'Home',
