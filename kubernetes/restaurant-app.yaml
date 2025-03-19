@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: restaurant-app
-        image: ui-app:5.0
+        image: ui-app:6.0
         imagePullPolicy: Never # Moved to container level
         ports:
         - containerPort: 8000
@@ -22,6 +22,16 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "250m"
+        volumeMounts:
+        - name: work
+          subPath: env.js
+          mountPath: /usr/share/nginx/html/ui/env.js
+          readOnly: false
+      volumes: 
+      - name: work
+        configMap:
+            name: restaurent-app-config
+      
 # ---
 # apiVersion: v1
 # kind: Service
@@ -42,10 +52,23 @@ kind: Service
 metadata:
   name: restaurant-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: restaurant-app
   ports:
   - protocol: TCP
     port: 8000
     targetPort: 8000
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: restaurent-app-config
+data:
+  env.js: |-
+        (function (window) {
+        window.__env = window.__env || {};
+        window.__env.production= false;
+        window.__env.apiUrl='/api/backend/';
+        }(this));

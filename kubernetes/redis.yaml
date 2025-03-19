@@ -36,4 +36,4 @@ spec:
     - protocol: TCP
       port: 6379      # Service port
       targetPort: 6379 # Container port
-  type: NodePort   # Accessible within the cluster
+  type: ClusterIP   # Accessible within the cluster

@@ -20,7 +20,7 @@ spec:
         app_type: frontend
     spec:
       containers:
-        - image: api-gateway:3.0
+        - image: api_gateway:4.0
           name: ui-service-app
           resources:
             requests:
@@ -36,7 +36,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: my-env-config
-      restartPolicy: Never
+      restartPolicy: Always
 # ---
 # apiVersion: v1 # Added apiVersion for Service
 # kind: Service
@@ -75,21 +75,21 @@ data:
   TENANT_CONFIG: |
     {
       "tenant1.abc.com": {
-        "keycloak_base_url": "http://tenant1.abc.com:30001",
+        "keycloak_base_url": "http://keycloak.abc.com",
         "keycloak_service_url": "http://keycloak:8080",
         "realm": "tenant1",
         "client_id": "api-gateway",
-        "client_secret": "JGenifJZhEW0etODVAwhzKw81Z5D7YEG",
+        "client_secret": "QP79KqlZ1ZIP9FmUFbGFI1bNKHOlqLt8",
         "callback_url": "http://tenant1.abc.com/callback",
         "ui_url": "http://restaurant-service:8000/ui",
         "backend_url": "http://fastapi-service:8001"
       },
       "tenant2.abc.com": {
-        "keycloak_base_url": "http://tenant2.abc.com:30001",
+        "keycloak_base_url": "http://keycloak.abc.com",
         "keycloak_service_url": "http://keycloak:8080",
         "realm": "tenant2",
         "client_id": "api-gateway-tenant-2",
-        "client_secret": "kQZAOkIoPDUVZlHyU1LDwNIjGDQKEi0A",
+        "client_secret": "ROZ9pDCTfrFhTn5gHolbF2mLEJCdDGv3",
         "callback_url": "http://tenant2.abc.com/callback",
          "ui_url": "http://restaurant-service:8000/ui",
         "backend_url": "http://fastapi-service:8001"
