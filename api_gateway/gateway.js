@@ -218,14 +218,18 @@ app.use('/api/backend', createProxyMiddleware({
     changeOrigin: true,
     router:customRouteBackend,
     pathRewrite: { '^/api/backend': '' }, // Remove prefix if needed
-    onProxyReq: (proxyReq, req, res) => {
-        console.log(`Proxying request: ${req.method} ${req.originalUrl} -> ${BACKEND_URL}`);
-    },
-    onError: (err, req, res) => {
-        console.error('Proxy Error:', err);
-        res.status(500).json({ error: 'Proxy Error', details: err.message });
+    on:{
+        proxyReq:( proxyReq, req,res)=>{
+            console.log("In Proxy Request");
+            let tokenparts = req.session.token.split('.');
+            let decoded_token = JSON.parse(Buffer.from(tokenparts[1], 'base64').toString());
+            proxyReq.setHeader('X-Tenant-ID',decoded_token.iss.split('/').pop());
+            proxyReq.setHeader('X-Client-ID',decoded_token.azp);
+            proxyReq.setHeader('X-User-ID',decoded_token.email);
+            console.log(`Proxying request: ${req.method} ${req.originalUrl} -> ${BACKEND_URL}`);
+        }
     }
-}));
+    }));
 
 
 // Proxy requests to UI (Angular app)
