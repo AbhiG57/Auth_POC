@@ -23,6 +23,7 @@ let CLIENT_SECRET = "";
 let CALLBACK_URL = "";
 let UI_URL = "http://localhost:3000";
 let BACKEND_URL = "http://localhost:3000";
+let UI_REMOTE_URL = "http://localhost:3000";
 
 
  
@@ -47,11 +48,16 @@ function setConfigForTenant(req)
     CLIENT_SECRET = configs.client_secret;
     CALLBACK_URL = configs.callback_url;
     UI_URL = configs.ui_url;
+    UI_REMOTE_URL=configs.ui_remote_url
     BACKEND_URL = configs.backend_url;
 }
 
 const customRouterUI =function(req){
     return UI_URL;
+}
+
+const customRouterRemoteUI =function(req){
+    return UI_REMOTE_URL;
 }
 
 const customRouteBackend =function(req){
@@ -236,6 +242,12 @@ app.use('/api/backend', createProxyMiddleware({
 app.use('/ui', createProxyMiddleware({
     target: UI_URL,
     router:customRouterUI,
+    changeOrigin: true
+}));
+
+app.use('/remote', createProxyMiddleware({
+    target: UI_REMOTE_URL,
+    router:customRouterRemoteUI,
     changeOrigin: true
 }));
  

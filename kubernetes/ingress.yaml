@@ -38,3 +38,13 @@ spec:
                 name: keycloak
                 port:
                   number: 8080
+    - host: remote.abc.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: remote-ui-service
+                port:
+                  number: 8000

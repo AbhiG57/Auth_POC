@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: restaurant-app
+  name: remote-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: restaurant-app
+      app: remote-app
   template:
     metadata:
       labels:
-        app: restaurant-app
+        app: remote-app
     spec:
       containers:
-      - name: restaurant-app
-        image: shell-app:9.0
+      - name: remote-app
+        image: remote-app:1.0
         imagePullPolicy: Never # Moved to container level
         ports:
         - containerPort: 8000
@@ -22,15 +22,6 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "250m"
-        volumeMounts:
-        - name: work
-          subPath: env.js
-          mountPath: /usr/share/nginx/html/ui/env.js
-          readOnly: false
-      volumes: 
-      - name: work
-        configMap:
-            name: restaurent-app-config
       
 # ---
 # apiVersion: v1
@@ -50,25 +41,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: restaurant-service
+  name: remote-ui-service
 spec:
   type: ClusterIP
   selector:
-    app: restaurant-app
+    app: remote-app
   ports:
   - protocol: TCP
     port: 8000
     targetPort: 8000
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: restaurent-app-config
-data:
-  env.js: |-
-        (function (window) {
-        window.__env = window.__env || {};
-        window.__env.production= false;
-        window.__env.apiUrl='/api/backend/';
-        }(this));

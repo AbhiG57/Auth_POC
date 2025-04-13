@@ -20,7 +20,7 @@ spec:
         app_type: frontend
     spec:
       containers:
-        - image: api_gateway:4.0
+        - image: api-gateway:6.0
           name: ui-service-app
           resources:
             requests:
@@ -82,7 +82,8 @@ data:
         "client_secret": "QP79KqlZ1ZIP9FmUFbGFI1bNKHOlqLt8",
         "callback_url": "http://tenant1.abc.com/callback",
         "ui_url": "http://restaurant-service:8000/ui",
-        "backend_url": "http://fastapi-service:8001"
+        "backend_url": "http://fastapi-service:8001",
+        "ui_remote_url": "http://remote-ui-service:8000"
       },
       "tenant2.abc.com": {
         "keycloak_base_url": "http://keycloak.abc.com",
@@ -92,6 +93,7 @@ data:
         "client_secret": "ROZ9pDCTfrFhTn5gHolbF2mLEJCdDGv3",
         "callback_url": "http://tenant2.abc.com/callback",
          "ui_url": "http://restaurant-service:8000/ui",
-        "backend_url": "http://fastapi-service:8001"
+        "backend_url": "http://fastapi-service:8001",
+        "ui_remote_url": "http://remote-ui-service:8000"
       }
     }

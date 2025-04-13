@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: fastapi-app
-          image: backend-app # Change to your actual image name
+          image: backend-app:1.0 # Change to your actual image name
           ports:
             - containerPort: 8000
           env:
