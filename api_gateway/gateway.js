@@ -24,6 +24,7 @@ let CALLBACK_URL = "";
 let UI_URL = "http://localhost:3000";
 let BACKEND_URL = "http://localhost:3000";
 let UI_REMOTE_URL = "http://localhost:3000";
+let UI_REACT_URL = "http://localhost:3000";
 
 
  
@@ -50,10 +51,15 @@ function setConfigForTenant(req)
     UI_URL = configs.ui_url;
     UI_REMOTE_URL=configs.ui_remote_url
     BACKEND_URL = configs.backend_url;
+    UI_REACT_URL=configs.ui_react_url
 }
 
 const customRouterUI =function(req){
     return UI_URL;
+}
+
+const customRouterReactUI =function(req){
+    return UI_REACT_URL;
 }
 
 const customRouterRemoteUI =function(req){
@@ -242,6 +248,12 @@ app.use('/api/backend', createProxyMiddleware({
 app.use('/ui', createProxyMiddleware({
     target: UI_URL,
     router:customRouterUI,
+    changeOrigin: true
+}));
+
+app.use('/uir', createProxyMiddleware({
+    target: UI_REACT_URL,
+    router:customRouterReactUI,
     changeOrigin: true
 }));
 

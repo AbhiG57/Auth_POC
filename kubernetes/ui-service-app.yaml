@@ -20,7 +20,7 @@ spec:
         app_type: frontend
     spec:
       containers:
-        - image: api-gateway:6.0
+        - image: api-gateway:8.0
           name: ui-service-app
           resources:
             requests:
@@ -79,21 +79,23 @@ data:
         "keycloak_service_url": "http://keycloak:8080",
         "realm": "tenant1",
         "client_id": "api-gateway",
-        "client_secret": "QP79KqlZ1ZIP9FmUFbGFI1bNKHOlqLt8",
+        "client_secret": "DC7J5mxfZHxGOfu0yxpK2TrJeVu7UJUj",
         "callback_url": "http://tenant1.abc.com/callback",
         "ui_url": "http://restaurant-service:8000/ui",
         "backend_url": "http://fastapi-service:8001",
-        "ui_remote_url": "http://remote-ui-service:8000"
+        "ui_remote_url": "http://remote-ui-service:8000",
+        "ui_react_url": "http://react-service:8000/uir"
       },
       "tenant2.abc.com": {
         "keycloak_base_url": "http://keycloak.abc.com",
         "keycloak_service_url": "http://keycloak:8080",
         "realm": "tenant2",
         "client_id": "api-gateway-tenant-2",
-        "client_secret": "ROZ9pDCTfrFhTn5gHolbF2mLEJCdDGv3",
+        "client_secret": "k1T1PFZ78yU0ikLZxMspNnfXWtCnuuLf",
         "callback_url": "http://tenant2.abc.com/callback",
          "ui_url": "http://restaurant-service:8000/ui",
         "backend_url": "http://fastapi-service:8001",
-        "ui_remote_url": "http://remote-ui-service:8000"
+        "ui_remote_url": "http://remote-ui-service:8000",
+        "ui_react_url": "http://react-service/uir"
       }
     }
